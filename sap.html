@@ -3,594 +3,274 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Guide: SAP Shopping Agent & Commerce Cloud Integration</title>
+    <title>Interactive 60-Day Interview Prep Planner</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Visualization & Content Choices:
-        - Report Info: Executive Summary, Introduction -> Goal: Inform (Overall Context) -> Viz/Presentation: Text, clear headings -> Interaction: None (static intro) -> Justification: Provides foundational understanding.
-        - Report Info: Strategic Imperatives (Sec 3) -> Goal: Persuade/Inform (Benefits) -> Viz/Presentation: Interactive cards/sections for "Enhancing CX" and "Driving Sales" -> Interaction: Click to expand/reveal details -> Justification: Highlights value proposition engagingly.
-        - Report Info: Foundational Prerequisites (Sec 4, Table 1) -> Goal: Guide (Preparation) -> Viz/Presentation: Interactive checklist/expandable list items derived from Table 1 -> Interaction: Click to expand details for each prerequisite -> Justification: Actionable and easy to follow.
-        - Report Info: Technical Integration Guide (Sec 5, Table 2) -> Goal: Instruct (Implementation Steps) -> Viz/Presentation: Tabbed or accordion interface for API Permissions, Agent Config, Chat Sessions, API Interaction. Table 2 presented as a clear HTML table. -> Interaction: Click tabs/accordion headers to switch between steps. -> Justification: Organizes complex procedural information.
-        - Report Info: Data Flow and Product Catalog Management (Sec 6) -> Goal: Explain (Data Usage) -> Viz/Presentation: Text, potentially a simple HTML/CSS diagram illustrating data flow from Commerce Cloud to Shopping Agent. -> Interaction: None (static explanation/diagram) -> Justification: Clarifies data dependencies.
-        - Report Info: Deployment Best Practices, Troubleshooting (Sec 7) -> Goal: Advise (Operations) -> Viz/Presentation: Text for best practices. Interactive list/accordion for common challenges and solutions. -> Interaction: Click challenge to reveal troubleshooting tips. -> Justification: Provides practical operational guidance.
-        - Report Info: Conclusion and Future Outlook (Sec 8) -> Goal: Summarize/Inform (Future) -> Viz/Presentation: Text -> Interaction: None (static conclusion) -> Justification: Provides closure and forward-looking perspective.
-        - Libraries/Methods: Tailwind CSS for layout and styling. Vanilla JavaScript for all interactions (tabs, accordions, click-to-reveal). No Chart.js/Plotly.js as quantitative data visualization is not central to this report. No SVG/Mermaid.
-    -->
+    <!-- Chosen Palette: Calm Focus (Warm neutrals with soft blue accents) -->
+    <!-- Application Structure Plan: The application transforms the static 60-day table into an interactive dashboard. The primary navigation uses tabs for each of the 8 weeks, making the large amount of information manageable. Inside each week, days are presented as individual 'cards' in a responsive grid. This is more visually engaging and scannable than a simple table. Key interactions include subject filters (to focus on Java, Aptitude, etc.) and a checkbox on each card to track completion. A dynamic progress bar provides immediate visual feedback on overall progress. This structure was chosen because it turns a passive document into an active, personalized tool, enhancing user motivation and organization. -->
+    <!-- Visualization & Content Choices: Report Info: The 60-day plan. Goal: Make the plan interactive and trackable. Viz/Presentation: The core data is presented in HTML/Tailwind cards, organized by weekly tabs. A key visualization is the progress bar, implemented as a simple div animated with JS, which is more suitable than a full charting library for this purpose. Interaction: Users can toggle subject visibility via filter buttons and mark days complete with checkboxes. This allows for personalized study sessions and progress tracking. Justification: This approach directly enhances the usability of the source material without overcomplicating the interface. Library/Method: Vanilla JS for all logic (tab switching, filtering, progress updates). Tailwind CSS for styling. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
         body {
+            background-color: #f5f5f4; /* Warm Neutral: Stone 200 */
             font-family: 'Inter', sans-serif;
-            background-color: #FDFBF5; /* Light Beige */
-            color: #333333; /* Dark Gray */
         }
-        .nav-link {
-            transition: all 0.3s ease;
-            color: #4A5568; /* Tailwind gray-700 */
+        .tab.active {
+            border-color: #3b82f6; /* Accent: Blue 500 */
+            background-color: #dbeafe; /* Accent: Blue 100 */
+            color: #1e40af; /* Accent: Blue 800 */
         }
-        .nav-link.active, .nav-link:hover {
-            color: #3B82F6; /* Soft Blue */
-            border-bottom-color: #3B82F6;
-        }
-        .content-section {
-            display: none;
-        }
-        .content-section.active {
-            display: block;
-        }
-        .tab-button.active {
-            background-color: #3B82F6; /* Soft Blue */
+        .filter-btn.active {
+            background-color: #3b82f6;
             color: white;
         }
-        .accordion-header.active {
-            background-color: #EBF8FF; /* Lighter Blue for active accordion */
+        .day-card.completed {
+            opacity: 0.6;
+            background-color: #e7e5e4; /* Warm Neutral: Stone 300 */
         }
-        .accordion-content {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-out;
+        .day-card.completed h3 {
+            text-decoration: line-through;
         }
-        .card {
-            background-color: #FFFFFF;
-            border: 1px solid #E2E8F0; /* Tailwind gray-300 */
-        }
-        .accent-bg { background-color: #3B82F6; } /* Soft Blue */
-        .accent-text { color: #3B82F6; }
-        .neutral-bg-light { background-color: #F7FAFC; } /* Tailwind gray-100 */
-        .neutral-text-medium { color: #4A5568; } /* Tailwind gray-700 */
-        .table-header { background-color: #EBF8FF; } /* Lighter Blue */
-
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
     </style>
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="antialiased">
+<body class="antialiased text-stone-800">
 
-    <header class="bg-white shadow-md sticky top-0 z-50">
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <span class="font-bold text-xl accent-text">SAP Shopping Agent & Commerce Cloud Integration</span>
+    <div class="container mx-auto p-4 md:p-8 max-w-7xl">
+        
+        <header class="text-center mb-8">
+            <h1 class="text-3xl md:text-4xl font-bold text-stone-900">Your 60-Day Interview Prep Planner</h1>
+            <p class="mt-2 text-stone-600 max-w-3xl mx-auto">
+                This interactive roadmap is designed to guide you through Java, Aptitude, Reasoning, and Verbal topics over 60 days. Use the weekly tabs to navigate, filter subjects to focus your studies, and check off days as you complete them to track your progress.
+            </p>
+        </header>
+
+        <div class="sticky top-0 bg-f5f5f4/80 backdrop-blur-sm py-4 z-10 mb-6">
+            <div class="mb-4">
+                <div class="flex justify-between items-center mb-1">
+                    <span class="text-sm font-medium text-stone-700">Overall Progress</span>
+                    <span id="progress-text" class="text-sm font-bold text-blue-700">0%</span>
                 </div>
-                <nav class="hidden md:flex space-x-4 lg:space-x-6">
-                    <a href="#overview" class="nav-link py-2 px-3 rounded-md text-sm font-medium border-b-2 border-transparent">Overview</a>
-                    <a href="#why-integrate" class="nav-link py-2 px-3 rounded-md text-sm font-medium border-b-2 border-transparent">Why Integrate?</a>
-                    <a href="#prerequisites" class="nav-link py-2 px-3 rounded-md text-sm font-medium border-b-2 border-transparent">Prerequisites</a>
-                    <a href="#technical-guide" class="nav-link py-2 px-3 rounded-md text-sm font-medium border-b-2 border-transparent">Technical Guide</a>
-                    <a href="#data-management" class="nav-link py-2 px-3 rounded-md text-sm font-medium border-b-2 border-transparent">Data Management</a>
-                    <a href="#deployment" class="nav-link py-2 px-3 rounded-md text-sm font-medium border-b-2 border-transparent">Deployment</a>
-                    <a href="#future" class="nav-link py-2 px-3 rounded-md text-sm font-medium border-b-2 border-transparent">Future</a>
-                </nav>
-                <div class="md:hidden">
-                    <button id="mobile-menu-button" class="text-gray-500 hover:text-gray-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500">
-                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
-                        </svg>
-                    </button>
+                <div class="w-full bg-stone-300 rounded-full h-2.5">
+                    <div id="progress-bar" class="bg-blue-500 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
                 </div>
+            </div>
+            
+            <div class="flex flex-wrap gap-2 justify-center">
+                <button data-filter="java" class="filter-btn active px-3 py-1.5 text-sm font-medium rounded-md bg-stone-200 hover:bg-stone-300 transition-colors">Java</button>
+                <button data-filter="aptitude" class="filter-btn active px-3 py-1.5 text-sm font-medium rounded-md bg-stone-200 hover:bg-stone-300 transition-colors">Aptitude</button>
+                <button data-filter="reasoning" class="filter-btn active px-3 py-1.5 text-sm font-medium rounded-md bg-stone-200 hover:bg-stone-300 transition-colors">Reasoning</button>
+                <button data-filter="verbal" class="filter-btn active px-3 py-1.5 text-sm font-medium rounded-md bg-stone-200 hover:bg-stone-300 transition-colors">Verbal</button>
             </div>
         </div>
-        <div id="mobile-menu" class="md:hidden hidden bg-white shadow-lg">
-            <a href="#overview" class="block nav-link py-2 px-4 text-sm hover:bg-gray-100">Overview</a>
-            <a href="#why-integrate" class="block nav-link py-2 px-4 text-sm hover:bg-gray-100">Why Integrate?</a>
-            <a href="#prerequisites" class="block nav-link py-2 px-4 text-sm hover:bg-gray-100">Prerequisites</a>
-            <a href="#technical-guide" class="block nav-link py-2 px-4 text-sm hover:bg-gray-100">Technical Guide</a>
-            <a href="#data-management" class="block nav-link py-2 px-4 text-sm hover:bg-gray-100">Data Management</a>
-            <a href="#deployment" class="block nav-link py-2 px-4 text-sm hover:bg-gray-100">Deployment</a>
-            <a href="#future" class="block nav-link py-2 px-4 text-sm hover:bg-gray-100">Future</a>
-        </div>
-    </header>
 
-    <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <section id="overview" class="content-section active">
-            <h1 class="text-3xl font-bold mb-6 accent-text">Overview: Transforming E-commerce with Conversational AI</h1>
-            <p class="mb-4 text-lg leading-relaxed">This guide explores the integration of the SAP Shopping Agent with SAP Commerce Cloud, a pivotal advancement aimed at revolutionizing the digital retail experience. The SAP Shopping Agent, part of the SAP CX AI Toolkit, introduces a dynamic conversational commerce model. It leverages natural language to help customers find products, get recommendations, and handle complex queries, much like a knowledgeable sales associate. This integration is API-driven, requiring careful configuration, authentication, and product catalog synchronization. The goal is to create personalized shopping journeys, streamline product discovery, and ultimately boost customer engagement and sales.</p>
-            <div class="grid md:grid-cols-2 gap-6 mt-8">
-                <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="text-xl font-semibold mb-3 accent-text">SAP Shopping Agent</h3>
-                    <p class="neutral-text-medium">An intelligent AI component within the SAP CX AI Toolkit. It uses natural language conversations to assist online shoppers, offering personalized guidance, product discovery, and intelligent recommendations. Key capabilities include understanding context, managing complex requests, and integrating with product catalogs for real-time information.</p>
-                </div>
-                <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="text-xl font-semibold mb-3 accent-text">SAP Commerce Cloud</h3>
-                    <p class="neutral-text-medium">A comprehensive, modular e-commerce platform for building, managing, and optimizing online businesses. It supports B2C and B2B storefronts, customer experience management, and end-to-end e-commerce processes. It serves as the authoritative source for product data in this integration.</p>
-                </div>
-            </div>
-             <p class="mt-6 text-md italic neutral-text-medium">The integration establishes SAP Commerce Cloud as the system of record for product and transactional data, with the AI Shopping Agent acting as an intelligent interaction layer, enhancing customer experience without duplicating core business logic.</p>
-        </section>
+        <nav class="flex flex-wrap justify-center border-b border-stone-300 mb-6">
+            <button data-week="1" class="tab active text-sm md:text-base font-medium px-4 py-3 border-b-2 border-transparent text-stone-500 hover:text-blue-600 hover:border-blue-300 transition-all">Week 1</button>
+            <button data-week="2" class="tab text-sm md:text-base font-medium px-4 py-3 border-b-2 border-transparent text-stone-500 hover:text-blue-600 hover:border-blue-300 transition-all">Week 2</button>
+            <button data-week="3" class="tab text-sm md:text-base font-medium px-4 py-3 border-b-2 border-transparent text-stone-500 hover:text-blue-600 hover:border-blue-300 transition-all">Week 3</button>
+            <button data-week="4" class="tab text-sm md:text-base font-medium px-4 py-3 border-b-2 border-transparent text-stone-500 hover:text-blue-600 hover:border-blue-300 transition-all">Week 4</button>
+            <button data-week="5" class="tab text-sm md:text-base font-medium px-4 py-3 border-b-2 border-transparent text-stone-500 hover:text-blue-600 hover:border-blue-300 transition-all">Week 5</button>
+            <button data-week="6" class="tab text-sm md:text-base font-medium px-4 py-3 border-b-2 border-transparent text-stone-500 hover:text-blue-600 hover:border-blue-300 transition-all">Week 6</button>
+            <button data-week="7" class="tab text-sm md:text-base font-medium px-4 py-3 border-b-2 border-transparent text-stone-500 hover:text-blue-600 hover:border-blue-300 transition-all">Week 7</button>
+            <button data-week="8" class="tab text-sm md:text-base font-medium px-4 py-3 border-b-2 border-transparent text-stone-500 hover:text-blue-600 hover:border-blue-300 transition-all">Week 8</button>
+        </nav>
 
-        <section id="why-integrate" class="content-section">
-            <h1 class="text-3xl font-bold mb-6 accent-text">Strategic Imperatives: Why Integrate?</h1>
-            <p class="mb-8 text-lg leading-relaxed">Integrating the SAP Shopping Agent with Commerce Cloud offers compelling business advantages, primarily focused on elevating the customer experience and driving operational efficiencies. This synergy transforms the traditional e-commerce interaction into a more intuitive, personalized, and effective engagement.</p>
-            <div class="space-y-6">
-                <div class="card p-6 rounded-lg shadow-lg interactive-card">
-                    <div class="flex justify-between items-center cursor-pointer accordion-toggle-button">
-                        <h3 class="text-xl font-semibold accent-text">Enhanced Customer Experience & Engagement</h3>
-                        <span class="text-2xl transform transition-transform duration-300 accent-text">&#x25BC;</span>
-                    </div>
-                    <div class="accordion-content mt-4">
-                        <p class="neutral-text-medium mb-2">The Shopping Agent offers personalized guidance 24/7 through natural language, moving beyond basic search. Customers can ask detailed questions, compare products, and receive tailored suggestions (e.g., "build a complete outfit").</p>
-                        <ul class="list-disc list-inside neutral-text-medium space-y-1">
-                            <li>Improved product discovery.</li>
-                            <li>Increased confidence in purchasing decisions.</li>
-                            <li>Reduced friction in the buying process.</li>
-                            <li>Addresses demand for seamless, responsive experiences.</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="card p-6 rounded-lg shadow-lg interactive-card">
-                    <div class="flex justify-between items-center cursor-pointer accordion-toggle-button">
-                        <h3 class="text-xl font-semibold accent-text">Driving Sales & Operational Efficiency</h3>
-                        <span class="text-2xl transform transition-transform duration-300 accent-text">&#x25BC;</span>
-                    </div>
-                    <div class="accordion-content mt-4">
-                        <p class="neutral-text-medium mb-2">The conversational nature boosts conversion rates and facilitates up-selling/cross-selling by recommending complementary or alternative products. It also automates customer service for product inquiries.</p>
-                        <ul class="list-disc list-inside neutral-text-medium space-y-1">
-                            <li>Reduces workload on human customer service teams.</li>
-                            <li>Streamlines operations and enhances productivity.</li>
-                            <li>CX AI Toolkit can help generate consistent product descriptions and attributes, improving catalog management efficiency.</li>
-                            <li>Delivers a dual benefit: revenue generation and cost reduction.</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="prerequisites" class="content-section">
-            <h1 class="text-3xl font-bold mb-6 accent-text">Foundational Prerequisites for Integration</h1>
-            <p class="mb-8 text-lg leading-relaxed">Successful integration hinges on meticulous preparation. This checklist outlines the essential licenses, tenant configurations, Commerce Cloud preparations, and data readiness steps required before initiating the integration process.</p>
-            <div class="space-y-4">
-                <div class="prerequisite-item card p-4 rounded-lg shadow">
-                    <div class="flex justify-between items-center cursor-pointer accordion-toggle-button">
-                        <h4 class="font-semibold text-lg accent-text">Licensing</h4>
-                        <span class="text-xl transform transition-transform duration-300 accent-text">&#x25BC;</span>
-                    </div>
-                    <div class="accordion-content mt-3">
-                        <ul class="list-disc list-inside neutral-text-medium space-y-1 pl-4">
-                            <li><strong>SAP CX AI Toolkit License:</strong> Ensure a valid, active license.</li>
-                            <li><strong>SAP Commerce Cloud License:</strong> Ensure a valid, active license.</li>
-                        </ul>
-                    </div>
-                </div>
-                 <div class="prerequisite-item card p-4 rounded-lg shadow">
-                    <div class="flex justify-between items-center cursor-pointer accordion-toggle-button">
-                        <h4 class="font-semibold text-lg accent-text">Tenant Setup</h4>
-                        <span class="text-xl transform transition-transform duration-300 accent-text">&#x25BC;</span>
-                    </div>
-                    <div class="accordion-content mt-3">
-                        <ul class="list-disc list-inside neutral-text-medium space-y-1 pl-4">
-                            <li><strong>Tenant Mapping (CX AI Toolkit to Commerce Cloud):</strong> Successfully map your SAP CX AI Toolkit tenant to your SAP Commerce Cloud tenant. This enables product recommendations from the catalog. Only the "online" version of the catalog is supported.</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="prerequisite-item card p-4 rounded-lg shadow">
-                    <div class="flex justify-between items-center cursor-pointer accordion-toggle-button">
-                        <h4 class="font-semibold text-lg accent-text">Commerce Cloud Configuration</h4>
-                        <span class="text-xl transform transition-transform duration-300 accent-text">&#x25BC;</span>
-                    </div>
-                    <div class="accordion-content mt-3">
-                        <ul class="list-disc list-inside neutral-text-medium space-y-1 pl-4">
-                            <li><strong>Prepare `manifest.json` File:</strong> Include necessary extensions, specifically ensuring `odata2webservices` service is configured in a suitable node (e.g., API node for production). Trigger a build and deploy.</li>
-                            <li><strong>Validate/Configure Integration Objects:</strong> Ensure `IntegrationService`, `ScriptService`, `OutboundChannelConfig` are correctly configured, OAuth-enabled, and expose required attributes (e.g., `oAuthUrl`).</li>
-                            <li><strong>Create OAuth Client:</strong> Create an OAuth Client in SAP Commerce Cloud to allow the CX AI Toolkit to obtain authentication and authorization keys.</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="prerequisite-item card p-4 rounded-lg shadow">
-                    <div class="flex justify-between items-center cursor-pointer accordion-toggle-button">
-                        <h4 class="font-semibold text-lg accent-text">Identity & Access Management</h4>
-                        <span class="text-xl transform transition-transform duration-300 accent-text">&#x25BC;</span>
-                    </div>
-                    <div class="accordion-content mt-3">
-                        <ul class="list-disc list-inside neutral-text-medium space-y-1 pl-4">
-                            <li><strong>Configure API Permissions:</strong> In SAP Cloud Identity Services - Identity Authentication, enable all APIs for principal propagation for SAP CX AI Toolkit.</li>
-                            <li><strong>Set Client ID and Secret:</strong> Create a new application in Identity Authentication and add a client secret, ensuring it's securely stored.</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="prerequisite-item card p-4 rounded-lg shadow">
-                    <div class="flex justify-between items-center cursor-pointer accordion-toggle-button">
-                        <h4 class="font-semibold text-lg accent-text">Data Preparation</h4>
-                        <span class="text-xl transform transition-transform duration-300 accent-text">&#x25BC;</span>
-                    </div>
-                    <div class="accordion-content mt-3">
-                        <ul class="list-disc list-inside neutral-text-medium space-y-1 pl-4">
-                            <li><strong>Product Catalog Synchronization:</strong> Synchronize the product catalog from SAP Commerce Cloud with the SAP CX AI Toolkit. Only the "Online" version is supported. Initial sync can take several hours. CronJobs manage this process.</li>
-                        </ul>
-                         <p class="mt-2 text-sm italic neutral-text-medium">Robust Product Information Management (PIM) practices in Commerce Cloud are crucial, as data quality directly impacts AI agent performance.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="technical-guide" class="content-section">
-            <h1 class="text-3xl font-bold mb-6 accent-text">Technical Integration Guide: Connecting the Systems</h1>
-            <p class="mb-8 text-lg leading-relaxed">The connection between the SAP Shopping Agent and SAP Commerce Cloud is primarily API-driven. This section details the steps for API permissions, agent configuration, initiating chat sessions, and interacting with the agent. OAuth 2.0 and JWT tokens are key for secure communication.</p>
-
-            <div class="mb-6">
-                <div class="flex border-b border-gray-300">
-                    <button class="tab-button py-2 px-4 text-gray-600 hover:text-blue-500 focus:outline-none active" data-tab="api-permissions">API Permissions & Auth</button>
-                    <button class="tab-button py-2 px-4 text-gray-600 hover:text-blue-500 focus:outline-none" data-tab="agent-config">Agent Configuration</button>
-                    <button class="tab-button py-2 px-4 text-gray-600 hover:text-blue-500 focus:outline-none" data-tab="chat-sessions">Chat Sessions</button>
-                    <button class="tab-button py-2 px-4 text-gray-600 hover:text-blue-500 focus:outline-none" data-tab="api-interaction">API Interaction</button>
-                </div>
-            </div>
-
-            <div id="api-permissions" class="tab-content active">
-                <h3 class="text-2xl font-semibold mb-4 accent-text">API Permissions and Authentication (OAuth Tokens)</h3>
-                <p class="neutral-text-medium mb-3">Secure communication relies on REST APIs and JWT tokens (OAuth 2.0).</p>
-                <ol class="list-decimal list-inside neutral-text-medium space-y-2 pl-4">
-                    <li><strong>Configure API Permissions:</strong>
-                        <ul class="list-disc list-inside pl-6">
-                            <li>In SAP Cloud Identity Services - Identity Authentication: Navigate to "Applications and Resources" > "Applications".</li>
-                            <li>Select SAP CX AI Toolkit application. Under "Application APIs" > "Provided APIs", enable all APIs for principal propagation. Save changes.</li>
-                        </ul>
-                    </li>
-                    <li><strong>Establish Client ID and Secret:</strong>
-                        <ul class="list-disc list-inside pl-6">
-                            <li>In SAP Cloud Identity Services - Identity Authentication: Create "New Application" (OpenID Connect).</li>
-                            <li>Under "Application APIs", choose "Client Authentication" to add a new client secret. Specify expiry/scope and store securely.</li>
-                        </ul>
-                    </li>
-                    <li><strong>Obtain OAuth Token:</strong>
-                        <ul class="list-disc list-inside pl-6">
-                            <li>Send `POST` request to authorization server's `/oauth2/token` endpoint.</li>
-                            <li>Parameters: `grant_type`, `username`, `password`, `client_id`, `client_secret`.</li>
-                            <li>Use the obtained token in `Authorization: Bearer {{TOKEN}}` header for API calls.</li>
-                            <li>Note: In live UI, chatbot handles token management.</li>
-                        </ul>
-                    </li>
-                </ol>
-            </div>
-
-            <div id="agent-config" class="tab-content hidden">
-                <h3 class="text-2xl font-semibold mb-4 accent-text">Configuring the Shopping Assistant Agent</h3>
-                <p class="neutral-text-medium mb-3">Configure via UI in SAP CX AI Toolkit or programmatically via API.</p>
-                <div class="grid md:grid-cols-2 gap-6">
-                    <div>
-                        <h4 class="text-lg font-semibold mb-2">UI-Based Configuration:</h4>
-                        <ol class="list-decimal list-inside neutral-text-medium space-y-1 pl-4">
-                            <li>Login to SAP CX AI Toolkit, go to AI Agent section, click "Create AI Agent".</li>
-                            <li>Set "Agent Type" to "Shopping Assistant Agent".</li>
-                            <li>Provide "Agent Details" (name, description).</li>
-                            <li>Under "Agent Source", select the Commerce Cloud product catalog. "Source Application" and "Reference Object" should auto-populate if integrated correctly.</li>
-                            <li>In "Agent Settings", define initial message and additional info.</li>
-                            <li>An `Agent ID` (configuration ID) is generated upon creation.</li>
-                        </ol>
-                    </div>
-                    <div>
-                        <h4 class="text-lg font-semibold mb-2">API-Based Configuration:</h4>
-                        <ol class="list-decimal list-inside neutral-text-medium space-y-1 pl-4">
-                            <li>Send `POST` request to `/assistant/v2/shopping/config`.</li>
-                            <li>Payload includes: `agent_name`, `agent_description`, `is_active`, `initial_message`, `catalog_id` (Commerce Cloud catalog), `catalog_version` (default: `Online`), `tenant_id` (CX AI instance).</li>
-                            <li>Optional: `global_settings` for pricing details.</li>
-                            <li>Successful call returns `agent_id`.</li>
-                        </ol>
-                    </div>
-                </div>
-            </div>
-
-            <div id="chat-sessions" class="tab-content hidden">
-                <h3 class="text-2xl font-semibold mb-4 accent-text">Initiating and Managing Chat Sessions</h3>
-                <p class="neutral-text-medium mb-3">A unique chat session must be initiated for each conversation.</p>
-                 <ol class="list-decimal list-inside neutral-text-medium space-y-2 pl-4">
-                    <li><strong>Initiate Chat Session:</strong>
-                        <ul class="list-disc list-inside pl-6">
-                            <li>Send `POST` request to `/assistant/v1/shopping/chat_session`.</li>
-                            <li>Payload: `config_id` (the `agent_id` from agent configuration).</li>
-                            <li>Response: unique `session_id` and initial `welcome_message`. This `session_id` is crucial for maintaining conversation context.</li>
-                        </ul>
-                    </li>
-                    <li><strong>Manage Chat Sessions:</strong>
-                        <ul class="list-disc list-inside pl-6">
-                            <li>Retrieve session details/history: `GET` request to `/assistant/v1/shopping/sessions`.</li>
-                            <li>Delete sessions when no longer needed.</li>
-                        </ul>
-                    </li>
-                </ol>
-            </div>
-
-            <div id="api-interaction" class="tab-content hidden">
-                <h3 class="text-2xl font-semibold mb-4 accent-text">Interacting with the Shopping Agent via APIs</h3>
-                <p class="neutral-text-medium mb-3">Send user queries and receive agent responses.</p>
-                <ol class="list-decimal list-inside neutral-text-medium space-y-2 pl-4">
-                    <li><strong>Send User Input:</strong>
-                        <ul class="list-disc list-inside pl-6">
-                             <li>Send `POST` request to `/assistant/v1/shopping/chat`.</li>
-                             <li>Payload: `session_id` (from session initiation), `user_input` (customer's query string).</li>
-                        </ul>
-                    </li>
-                    <li><strong>Receive Agent Response:</strong>
-                        <ul class="list-disc list-inside pl-6">
-                            <li>API returns: natural language `response` and a `recommendations` array with relevant product suggestions.</li>
-                            <li>This enables dynamic, conversational interactions and can be integrated into various storefronts (e.g., Spartacus).</li>
-                        </ul>
-                    </li>
-                </ol>
-            </div>
-
-            <div class="mt-8 overflow-x-auto">
-                <h3 class="text-2xl font-semibold mb-4 accent-text">Key API Endpoints Summary</h3>
-                <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow">
-                    <thead class="table-header">
-                        <tr>
-                            <th class="py-3 px-4 border-b text-left text-sm font-semibold neutral-text-medium">Endpoint</th>
-                            <th class="py-3 px-4 border-b text-left text-sm font-semibold neutral-text-medium">Method</th>
-                            <th class="py-3 px-4 border-b text-left text-sm font-semibold neutral-text-medium">Purpose</th>
-                            <th class="py-3 px-4 border-b text-left text-sm font-semibold neutral-text-medium">Auth</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr class="hover:bg-gray-50">
-                            <td class="py-3 px-4 border-b text-sm neutral-text-medium"><code>/assistant/v2/shopping/config</code></td>
-                            <td class="py-3 px-4 border-b text-sm neutral-text-medium">POST</td>
-                            <td class="py-3 px-4 border-b text-sm neutral-text-medium">Create/update Shopping Agent config. Req: `agent_name`, `catalog_id`, etc. Resp: `agent_id`.</td>
-                            <td class="py-3 px-4 border-b text-sm neutral-text-medium">JWT Token</td>
-                        </tr>
-                        <tr class="hover:bg-gray-50">
-                            <td class="py-3 px-4 border-b text-sm neutral-text-medium"><code>/assistant/v1/shopping/chat_session</code></td>
-                            <td class="py-3 px-4 border-b text-sm neutral-text-medium">POST</td>
-                            <td class="py-3 px-4 border-b text-sm neutral-text-medium">Generate new chat session. Req: `config_id`. Resp: `session_id`, `welcome_message`.</td>
-                            <td class="py-3 px-4 border-b text-sm neutral-text-medium">JWT Token</td>
-                        </tr>
-                        <tr class="hover:bg-gray-50">
-                            <td class="py-3 px-4 border-b text-sm neutral-text-medium"><code>/assistant/v1/shopping/chat</code></td>
-                            <td class="py-3 px-4 border-b text-sm neutral-text-medium">POST</td>
-                            <td class="py-3 px-4 border-b text-sm neutral-text-medium">Send user input, get response. Req: `session_id`, `user_input`. Resp: `response`, `recommendations`.</td>
-                            <td class="py-3 px-4 border-b text-sm neutral-text-medium">JWT Token</td>
-                        </tr>
-                        <tr class="hover:bg-gray-50">
-                            <td class="py-3 px-4 border-b text-sm neutral-text-medium"><code>/assistant/v1/shopping/sessions</code></td>
-                            <td class="py-3 px-4 border-b text-sm neutral-text-medium">GET</td>
-                            <td class="py-3 px-4 border-b text-sm neutral-text-medium">Retrieve chat session details/history.</td>
-                            <td class="py-3 px-4 border-b text-sm neutral-text-medium">JWT Token</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </section>
-
-        <section id="data-management" class="content-section">
-            <h1 class="text-3xl font-bold mb-6 accent-text">Data Flow and Product Catalog Management</h1>
-            <p class="mb-8 text-lg leading-relaxed">The Shopping Agent's effectiveness is directly tied to the quality and accessibility of product data from SAP Commerce Cloud. Robust Product Information Management (PIM) is crucial.</p>
-            <div class="grid md:grid-cols-2 gap-6">
-                <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="text-xl font-semibold mb-3 accent-text">How Shopping Agent Utilizes Product Data</h3>
-                    <p class="neutral-text-medium mb-2">The synchronized product catalog is the agent's primary knowledge base. It accesses:</p>
-                    <ul class="list-disc list-inside neutral-text-medium space-y-1">
-                        <li>Detailed product descriptions.</li>
-                        <li>Structured attributes (color, size, material, features).</li>
-                        <li>Uploaded static documents (manuals, warranties).</li>
-                        <li>Pricing and availability information.</li>
-                        <li>Compatibility details for recommendations.</li>
-                    </ul>
-                    <p class="neutral-text-medium mt-2 italic">The agent only uses the "online" version of the catalog for current, relevant information.</p>
-                </div>
-                <div class="card p-6 rounded-lg shadow-lg">
-                    <h3 class="text-xl font-semibold mb-3 accent-text">Considerations for Data Quality</h3>
-                    <p class="neutral-text-medium mb-2">Rich, structured attributes and data consistency are vital for accurate AI responses. Deficiencies in source data (Commerce Cloud) directly impact AI performance.</p>
-                    <p class="neutral-text-medium">The SAP CX AI Toolkit can also enhance catalog data by:</p>
-                    <ul class="list-disc list-inside neutral-text-medium space-y-1">
-                        <li>Generating AI-powered product descriptions and attributes.</li>
-                        <li>Automatically creating attribute sets via image recognition and context analysis.</li>
-                    </ul>
-                    <p class="neutral-text-medium mt-2 italic">This suggests a symbiotic relationship where AI consumes and improves product content.</p>
-                </div>
-            </div>
-            <div class="mt-8 p-6 neutral-bg-light rounded-lg shadow">
-                <h4 class="text-lg font-semibold mb-3 accent-text">Simplified Data Flow:</h4>
-                <div class="flex flex-col sm:flex-row items-center justify-around space-y-4 sm:space-y-0 sm:space-x-4 text-center">
-                    <div class="p-4 bg-white rounded shadow w-full sm:w-1/3">
-                        <p class="font-semibold">SAP Commerce Cloud</p>
-                        <p class="text-sm neutral-text-medium">(Product Catalog - Online Version)</p>
-                    </div>
-                    <div class="text-2xl accent-text font-bold">&#10230;</div>
-                    <div class="p-4 bg-white rounded shadow w-full sm:w-1/3">
-                        <p class="font-semibold">SAP CX AI Toolkit</p>
-                        <p class="text-sm neutral-text-medium">(Synchronization)</p>
-                    </div>
-                    <div class="text-2xl accent-text font-bold">&#10230;</div>
-                     <div class="p-4 bg-white rounded shadow w-full sm:w-1/3">
-                        <p class="font-semibold">SAP Shopping Agent</p>
-                        <p class="text-sm neutral-text-medium">(Accesses Data for Recommendations & Responses)</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="deployment" class="content-section">
-            <h1 class="text-3xl font-bold mb-6 accent-text">Deployment Best Practices & Operational Considerations</h1>
-            <p class="mb-8 text-lg leading-relaxed">Ensuring a robust, scalable, and maintainable integration requires careful planning for deployment, performance, testing, and troubleshooting.</p>
-            <div class="space-y-6">
-                <div>
-                    <h3 class="text-2xl font-semibold mb-3 accent-text">Scalability and Performance</h3>
-                     <ul class="list-disc list-inside neutral-text-medium space-y-2 pl-4">
-                        <li>Design a scalable architecture considering data volume and complexity. SAP Commerce Cloud is inherently flexible.</li>
-                        <li>Leverage SAP Business Data Cloud and SAP Knowledge Graph for a unified, trusted data layer to improve AI accuracy and performance.</li>
-                        <li>Implement AI-driven test automation for Commerce Cloud integrations due to high transaction volumes and frequent updates.</li>
-                    </ul>
-                </div>
-                <div>
-                    <h3 class="text-2xl font-semibold mb-3 accent-text">Testing and Validation</h3>
-                     <ul class="list-disc list-inside neutral-text-medium space-y-2 pl-4">
-                        <li>Thorough testing is crucial due to numerous integrations and updates.</li>
-                        <li>AI-driven test automation benefits: enhanced coverage, dynamic test maintenance, faster execution, improved accuracy, predictive analytics for failure points.</li>
-                        <li>Integrate AI testing with CI/CD pipelines.</li>
-                        <li>Test not just functionality but the *quality of AI intelligence* (context retention, recommendation relevance, response accuracy).</li>
-                    </ul>
-                </div>
-
-                <div>
-                    <h3 class="text-2xl font-semibold mb-3 accent-text">Common Integration Challenges & Troubleshooting</h3>
-                    <p class="neutral-text-medium mb-4">A systematic approach is key. Here are common issues and tips:</p>
-                    <div class="space-y-3">
-                        <div class="troubleshooting-item card p-4 rounded-lg shadow">
-                            <div class="flex justify-between items-center cursor-pointer accordion-toggle-button">
-                                <h5 class="font-semibold text-md accent-text">Access and Provisioning Issues (CX AI Toolkit)</h5>
-                                <span class="text-lg transform transition-transform duration-300 accent-text">&#x25BC;</span>
-                            </div>
-                            <div class="accordion-content mt-2">
-                                <p class="text-sm neutral-text-medium"><strong>Symptoms:</strong> Unable to access new tenant. <br/><strong>Causes:</strong> Unknown credentials, lost onboarding emails, need for tenant re-assignment. <br/><strong>Resolution:</strong> Verify credentials, request email re-delivery, initiate tenant re-assignment via SAP support.</p>
-                            </div>
-                        </div>
-                        <div class="troubleshooting-item card p-4 rounded-lg shadow">
-                            <div class="flex justify-between items-center cursor-pointer accordion-toggle-button">
-                                <h5 class="font-semibold text-md accent-text">Configuration Errors in Commerce Cloud</h5>
-                                 <span class="text-lg transform transition-transform duration-300 accent-text">&#x25BC;</span>
-                            </div>
-                            <div class="accordion-content mt-2">
-                                <p class="text-sm neutral-text-medium"><strong>Symptoms:</strong> Communication failures. <br/><strong>Causes:</strong> Incorrect `manifest.json` (e.g., missing `odata2webservices`), improperly configured/OAuth-enabled integration objects, unexposed attributes. <br/><strong>Resolution:</strong> Review configurations against SAP docs, ensure attributes exposed, OAuth correct.</p>
-                            </div>
-                        </div>
-                        <div class="troubleshooting-item card p-4 rounded-lg shadow">
-                            <div class="flex justify-between items-center cursor-pointer accordion-toggle-button">
-                                <h5 class="font-semibold text-md accent-text">Service Restarts Not Done</h5>
-                                 <span class="text-lg transform transition-transform duration-300 accent-text">&#x25BC;</span>
-                            </div>
-                            <div class="accordion-content mt-2">
-                                <p class="text-sm neutral-text-medium"><strong>Symptoms:</strong> Config changes not taking effect. <br/><strong>Causes:</strong> Failure to restart services after updates. <br/><strong>Resolution:</strong> Full restart of Commerce Cloud services after significant changes.</p>
-                            </div>
-                        </div>
-                        <div class="troubleshooting-item card p-4 rounded-lg shadow">
-                            <div class="flex justify-between items-center cursor-pointer accordion-toggle-button">
-                                <h5 class="font-semibold text-md accent-text">Product Data Synchronization Issues</h5>
-                                 <span class="text-lg transform transition-transform duration-300 accent-text">&#x25BC;</span>
-                            </div>
-                            <div class="accordion-content mt-2">
-                                <p class="text-sm neutral-text-medium"><strong>Symptoms:</strong> Agent gives outdated/incomplete info. <br/><strong>Causes:</strong> Incomplete initial sync, CronJob problems, source data quality issues. <br/><strong>Resolution:</strong> Verify CronJob completion, investigate Commerce Cloud data quality.</p>
-                            </div>
-                        </div>
-                        <div class="troubleshooting-item card p-4 rounded-lg shadow">
-                            <div class="flex justify-between items-center cursor-pointer accordion-toggle-button">
-                                <h5 class="font-semibold text-md accent-text">API Communication Failures</h5>
-                                 <span class="text-lg transform transition-transform duration-300 accent-text">&#x25BC;</span>
-                            </div>
-                            <div class="accordion-content mt-2">
-                                <p class="text-sm neutral-text-medium"><strong>Symptoms:</strong> API call errors (auth failure, invalid request). <br/><strong>Causes:</strong> Incorrect/expired JWTs, invalid `config_id`/`session_id`, wrong API URLs. <br/><strong>Resolution:</strong> Re-authenticate for new JWTs, verify payload params, double-check endpoint URLs.</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <section id="future" class="content-section">
-            <h1 class="text-3xl font-bold mb-6 accent-text">Conclusion and Future Outlook</h1>
-            <p class="mb-4 text-lg leading-relaxed">The integration of SAP Shopping Agent with SAP Commerce Cloud is a strategic move towards personalized, intuitive, and efficient online shopping. Success depends on meticulous prerequisite adherence, robust API implementation, high-quality product data, and continuous testing.</p>
-            <p class="mb-4 text-lg leading-relaxed">The future of conversational commerce in the SAP ecosystem is evolving. Upcoming SAP CX AI Toolkit features for the Shopping Assistant include direct "Add-to-Cart" functionality, further embedding AI into the transactional flow. This points towards more autonomous and transactional AI agents.</p>
-            <p class="text-lg leading-relaxed">SAP's broader AI vision, especially with Joule agents, suggests a future of collaborative AI across business functions. This implies an ecosystem where AI provides increasingly autonomous and integrated support throughout the customer journey, from discovery to post-purchase service, fostering an intelligent enterprise.</p>
-        </section>
-    </main>
-
-    <footer class="bg-gray-800 text-white text-center p-6 mt-12">
-        <p>&copy; <span id="currentYear"></span> Interactive Guide for SAP Solutions. All information based on the provided report.</p>
-    </footer>
+        <main id="plan-content" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        </main>
+    </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const navLinks = document.querySelectorAll('.nav-link');
-            const contentSections = document.querySelectorAll('.content-section');
-            const mobileMenuButton = document.getElementById('mobile-menu-button');
-            const mobileMenu = document.getElementById('mobile-menu');
-            const tabButtons = document.querySelectorAll('.tab-button');
-            const tabContents = document.querySelectorAll('.tab-content');
-            const accordionToggleButtons = document.querySelectorAll('.accordion-toggle-button');
+        const planData = [
+            { day: 1, week: 1, java: 'Introduction to Java, JVM, JRE, JDK, Variables, Data Types', aptitude: 'Number Systems (Basic Concepts, Divisibility Rules)', reasoning: 'Syllogisms (Basic Rules, Two Statements)', verbal: 'Parts of Speech (Nouns, Pronouns)', notes: 'Set up Java environment. Solve basic math problems.' },
+            { day: 2, week: 1, java: 'Operators (Arithmetic, Relational, Logical, Bitwise)', aptitude: 'Number Systems (LCM & HCF)', reasoning: 'Syllogisms (Three Statements)', verbal: 'Parts of Speech (Verbs, Adjectives)', notes: 'Practice operator precedence.' },
+            { day: 3, week: 1, java: 'Control Flow (if-else, switch)', aptitude: 'Percentages (Basic Concepts, Calculations)', reasoning: 'Blood Relations (Family Tree)', verbal: 'Parts of Speech (Adverbs, Prepositions)', notes: 'Write programs using conditional statements.' },
+            { day: 4, week: 1, java: 'Loops (for, while, do-while)', aptitude: 'Percentages (Profit & Loss - Basic)', reasoning: 'Blood Relations (Coding-Decoding)', verbal: 'Parts of Speech (Conjunctions, Interjections)', notes: 'Solve loop-based problems.' },
+            { day: 5, week: 1, java: 'Arrays (1D Arrays)', aptitude: 'Profit & Loss (Advanced Problems)', reasoning: 'Directions (Basic Direction Sense)', verbal: 'Tenses (Simple Present, Past, Future)', notes: 'Array manipulation problems.' },
+            { day: 6, week: 1, java: 'Arrays (2D Arrays, Jagged Arrays)', aptitude: 'Ratios & Proportions (Basic Concepts)', reasoning: 'Directions (Distance & Displacement)', verbal: 'Tenses (Continuous Forms)', notes: 'Practice array traversal.' },
+            { day: 7, week: 1, type: 'revision', java: 'Weekly Revision & Mock Test', aptitude: 'Revision & Practice', reasoning: 'Revision & Practice', verbal: 'Revision & Practice', notes: 'Review all topics. Take a short mock test.' },
+            { day: 8, week: 2, java: 'Introduction to OOPs, Classes & Objects', aptitude: 'Ratios & Proportions (Partnership, Mixtures)', reasoning: 'Coding-Decoding (Letter Shifting, Number Based)', verbal: 'Tenses (Perfect Forms)', notes: 'Create simple classes.' },
+            { day: 9, week: 2, java: 'Constructors (Default, Parameterized, Copy)', aptitude: 'Averages (Basic Concepts)', reasoning: 'Coding-Decoding (Symbol Based)', verbal: 'Subject-Verb Agreement (Basic Rules)', notes: 'Overload constructors.' },
+            { day: 10, week: 2, java: 'Encapsulation (Getters & Setters)', aptitude: 'Averages (Weighted Average, Age Problems)', reasoning: 'Seating Arrangements (Linear Arrangement)', verbal: 'Subject-Verb Agreement (Advanced Rules)', notes: 'Implement data hiding.' },
+            { day: 11, week: 2, java: 'Inheritance (Single, Multilevel)', aptitude: 'Time & Work (Basic Problems)', reasoning: 'Seating Arrangements (Circular Arrangement)', verbal: 'Active & Passive Voice', notes: 'Practice method overriding.' },
+            { day: 12, week: 2, java: 'Inheritance (Hierarchical, Hybrid - conceptual)', aptitude: 'Time & Work (Pipes & Cisterns)', reasoning: 'Puzzles (Box-based, Floor-based)', verbal: 'Direct & Indirect Speech', notes: 'Understand `super` keyword.' },
+            { day: 13, week: 2, java: 'Polymorphism (Method Overloading)', aptitude: 'Time & Distance (Basic Problems)', reasoning: 'Puzzles (Scheduling Puzzles)', verbal: 'Vocabulary (Synonyms - Common Words)', notes: 'Practice compile-time polymorphism.' },
+            { day: 14, week: 2, type: 'revision', java: 'Weekly Revision & Mock Test', aptitude: 'Revision & Practice', reasoning: 'Revision & Practice', verbal: 'Revision & Practice', notes: 'Review all topics. Take a short mock test.' },
+            { day: 15, week: 3, java: 'Polymorphism (Method Overriding, Dynamic Method Dispatch)', aptitude: 'Time & Distance (Trains, Boats & Streams)', reasoning: 'Series Completion (Number Series)', verbal: 'Vocabulary (Antonyms - Common Words)', notes: 'Understand runtime polymorphism.' },
+            { day: 16, week: 3, java: 'Abstraction (Abstract Classes & Methods)', aptitude: 'Simple Interest (Basic Formulae)', reasoning: 'Series Completion (Alphabet Series)', verbal: 'Idioms & Phrases (Common ones)', notes: 'Implement abstract classes.' },
+            { day: 17, week: 3, java: 'Interfaces (Defining, Implementing)', aptitude: 'Compound Interest (Basic Formulae)', reasoning: 'Series Completion (Mixed Series)', verbal: 'One-Word Substitutions', notes: 'Differentiate abstract class vs interface.' },
+            { day: 18, week: 3, java: 'Packages & Access Modifiers', aptitude: 'Simple & Compound Interest (Combined Problems)', reasoning: 'Analogy (Word Analogy)', verbal: 'Reading Comprehension (Basic Strategies)', notes: 'Organize classes into packages.' },
+            { day: 19, week: 3, java: 'Exception Handling (try-catch, finally)', aptitude: 'Permutations & Combinations (Basic Concepts)', reasoning: 'Analogy (Number Analogy)', verbal: 'Reading Comprehension (Practice Passages)', notes: 'Handle common exceptions.' },
+            { day: 20, week: 3, java: 'Exception Handling (throw, throws, custom exceptions)', aptitude: 'Permutations & Combinations (Advanced Problems)', reasoning: 'Classification (Odd One Out - Words)', verbal: 'Sentence Correction (Grammar Rules)', notes: 'Create custom exception classes.' },
+            { day: 21, week: 3, type: 'revision', java: 'Weekly Revision & Mock Test', aptitude: 'Revision & Practice', reasoning: 'Revision & Practice', verbal: 'Revision & Practice', notes: 'Review all topics. Take a short mock test.' },
+            { day: 22, week: 4, java: 'Introduction to Collections Framework', aptitude: 'Probability (Basic Concepts, Coins/Dice)', reasoning: 'Classification (Odd One Out - Numbers)', verbal: 'Sentence Correction (Idiom & Phrase Errors)', notes: 'Understand benefits of collections.' },
+            { day: 23, week: 4, java: 'List Interface (ArrayList, LinkedList)', aptitude: 'Probability (Cards, Bags & Balls)', reasoning: 'Logical Venn Diagrams', verbal: 'Para Jumbles (Basic Strategies)', notes: 'Practice list operations.' },
+            { day: 24, week: 4, java: 'Set Interface (HashSet, LinkedHashSet, TreeSet)', aptitude: 'Data Interpretation (Tables)', reasoning: 'Statement & Conclusion (Basic)', verbal: 'Para Jumbles (Practice Sets)', notes: 'Understand set properties.' },
+            { day: 25, week: 4, java: 'Map Interface (HashMap, LinkedHashMap, TreeMap)', aptitude: 'Data Interpretation (Bar Graphs)', reasoning: 'Statement & Conclusion (Advanced)', verbal: 'Cloze Test (Strategies & Practice)', notes: 'Practice map operations.' },
+            { day: 26, week: 4, java: 'Generics (Type Safety, Wildcards)', aptitude: 'Data Interpretation (Pie Charts)', reasoning: 'Statement & Assumptions', verbal: 'Error Spotting (Common Errors)', notes: 'Use generics with collections.' },
+            { day: 27, week: 4, java: 'Iterators & Comparators/Comparables', aptitude: 'Data Interpretation (Line Graphs)', reasoning: 'Cause & Effect', verbal: 'Fill in the Blanks (Vocabulary & Grammar)', notes: 'Sort custom objects.' },
+            { day: 28, week: 4, type: 'revision', java: 'Weekly Revision & Mock Test', aptitude: 'Revision & Practice', reasoning: 'Revision & Practice', verbal: 'Revision & Practice', notes: 'Review all topics. Take a short mock test.' },
+            { day: 29, week: 5, java: 'Multithreading (Thread Class, Runnable Interface)', aptitude: 'Mensuration (Area of 2D Shapes)', reasoning: 'Data Sufficiency (Basic)', verbal: 'Sentence Improvement', notes: 'Create and run multiple threads.' },
+            { day: 30, week: 5, java: 'Multithreading (Synchronization, Deadlock - conceptual)', aptitude: 'Mensuration (Volume & Surface Area of 3D Shapes)', reasoning: 'Data Sufficiency (Advanced)', verbal: 'Vocabulary (Word Usage)', notes: 'Understand thread safety.' },
+            { day: 31, week: 5, java: 'I/O Streams (Byte Streams - FileInputStream, FileOutputStream)', aptitude: 'Calendars (Odd Days, Leap Years)', reasoning: 'Non-Verbal Reasoning (Mirror & Water Images)', verbal: 'Reading Comprehension (Inference Questions)', notes: 'Read/write binary data.' },
+            { day: 32, week: 5, java: 'I/O Streams (Character Streams - FileReader, FileWriter)', aptitude: 'Clocks (Angle between Hands, Time Gain/Loss)', reasoning: 'Non-Verbal Reasoning (Paper Folding)', verbal: 'Reading Comprehension (Tone & Purpose)', notes: 'Read/write text data.' },
+            { day: 33, week: 5, java: 'Serialization & Deserialization', aptitude: 'Seating Arrangements (Complex Puzzles)', reasoning: 'Non-Verbal Reasoning (Figure Completion)', verbal: 'Essay Writing (Basic Structure & Tips)', notes: 'Persist objects to file.' },
+            { day: 34, week: 5, java: 'JDBC (Connecting to DB, CRUD Operations - Basic)', aptitude: 'Blood Relations (Complex Problems)', reasoning: 'Non-Verbal Reasoning (Embedded Figures)', verbal: 'Precis Writing (Basic Rules)', notes: 'Practice with a simple database.' },
+            { day: 35, week: 5, type: 'revision', java: 'Weekly Revision & Mock Test', aptitude: 'Revision & Practice', reasoning: 'Revision & Practice', verbal: 'Revision & Practice', notes: 'Review all topics. Take a short mock test.' },
+            { day: 36, week: 6, java: 'Basic Data Structures (Arrays, Linked Lists - implementation concepts)', aptitude: 'Number Series (Advanced Patterns)', reasoning: 'Critical Reasoning (Strengthen/Weaken Argument)', verbal: 'Group Discussion (Tips & Practice)', notes: 'Understand DS operations.' },
+            { day: 37, week: 6, java: 'Basic Data Structures (Stacks, Queues - implementation concepts)', aptitude: 'Coding-Decoding (Advanced Logic)', reasoning: 'Critical Reasoning (Assumption, Conclusion)', verbal: 'Public Speaking (Basic Tips)', notes: 'Implement simple stack/queue.' },
+            { day: 38, week: 6, java: 'Basic Algorithms (Searching: Linear, Binary)', aptitude: 'Syllogisms (Advanced Cases)', reasoning: 'Decision Making', verbal: 'Interview Etiquette & Common Questions', notes: 'Practice search algorithms.' },
+            { day: 39, week: 6, java: 'Basic Algorithms (Sorting: Bubble, Selection, Insertion)', aptitude: 'Puzzles (Complex Grid Puzzles)', reasoning: 'Statement & Course of Action', verbal: 'Resume Building & Cover Letter Tips', notes: 'Implement simple sort algorithms.' },
+            { day: 40, week: 6, java: 'Recursion (Factorial, Fibonacci)', aptitude: 'Probability (Advanced Conditional Probability)', reasoning: 'Assertions & Reasons', verbal: 'Mock Interview 1 (Technical Focus)', notes: 'Understand base case & recursive step.' },
+            { day: 41, week: 6, java: 'Time & Space Complexity Analysis (Big O Notation)', aptitude: 'Data Interpretation (Mixed Graphs)', reasoning: 'Situation Reaction Test', verbal: 'Mock Interview 2 (HR Focus)', notes: 'Analyze algorithm efficiency.' },
+            { day: 42, week: 6, type: 'revision', java: 'Weekly Revision & Mock Test', aptitude: 'Revision & Practice', reasoning: 'Revision & Practice', verbal: 'Revision & Practice', notes: 'Review all topics. Take a short mock test.' },
+            { day: 43, week: 7, java: 'Build a small Java project (e.g., Simple Calculator, To-Do List)', aptitude: 'Mixed Aptitude Problems', reasoning: 'Mixed Reasoning Problems', verbal: 'Mixed Verbal Problems', notes: 'Apply learned concepts in a project.' },
+            { day: 44, week: 7, java: 'Project Development / Refinement', aptitude: 'Mock Aptitude Test', reasoning: 'Mock Reasoning Test', verbal: 'Mock Verbal Test', notes: 'Focus on clean code and modularity.' },
+            { day: 45, week: 7, java: 'Project Development / Refinement', aptitude: 'Analyze Mock Test Results', reasoning: 'Analyze Mock Test Results', verbal: 'Analyze Mock Test Results', notes: 'Identify weak areas and revisit.' },
+            { day: 46, week: 7, java: 'Introduction to Git/GitHub (Basic commands)', aptitude: 'Advanced Permutations & Combinations', reasoning: 'Advanced Seating Arrangements', verbal: 'Advanced Reading Comprehension', notes: 'Version control for your project.' },
+            { day: 47, week: 7, java: 'DSA Practice (Easy LeetCode/HackerRank problems)', aptitude: 'Advanced Time & Work', reasoning: 'Advanced Puzzles', verbal: 'Advanced Sentence Correction', notes: 'Solve 3-5 problems.' },
+            { day: 48, week: 7, java: 'DSA Practice (Easy LeetCode/HackerRank problems)', aptitude: 'Advanced Time & Distance', reasoning: 'Advanced Syllogisms', verbal: 'Advanced Para Jumbles', notes: 'Solve 3-5 problems.' },
+            { day: 49, week: 7, type: 'revision', java: 'Weekly Revision & Full Length Mock Interview', aptitude: 'Revision & Practice', reasoning: 'Revision & Practice', verbal: 'Revision & Practice', notes: 'Simulate a full interview.' },
+            { day: 50, week: 8, java: 'Core Java Concepts Revision (OOPs, Collections, Exceptions, Multithreading)', aptitude: 'Quantitative Aptitude Revision', reasoning: 'Logical Reasoning Revision', verbal: 'Verbal Ability Revision', notes: 'Revisit frequently asked interview questions.' },
+            { day: 51, week: 8, java: 'DSA Practice (Medium LeetCode/HackerRank problems)', aptitude: 'Mock Aptitude Test', reasoning: 'Mock Reasoning Test', verbal: 'Mock Verbal Test', notes: 'Focus on problem-solving strategies.' },
+            { day: 52, week: 8, java: 'Common Java Interview Questions (Theory & Code Snippets)', aptitude: 'Analyze Mock Test Results', reasoning: 'Analyze Mock Test Results', verbal: 'Analyze Mock Test Results', notes: 'Prepare answers for common questions.' },
+            { day: 53, week: 8, java: 'System Design Basics (for freshers - conceptual)', aptitude: 'Mixed Aptitude Problems', reasoning: 'Mixed Reasoning Problems', verbal: 'Mixed Verbal Problems', notes: 'Understand basic system components.' },
+            { day: 54, week: 8, java: 'Mock Interview 3 (Technical + DSA)', aptitude: 'Mock Interview 4 (Behavioral + HR)', reasoning: 'Self-Assessment & Feedback', verbal: 'Refine communication skills.', notes: 'Get feedback and improve.' },
+            { day: 55, week: 8, java: 'Final Revision of all Java topics', aptitude: 'Final Revision of all Aptitude topics', reasoning: 'Final Revision of all Reasoning topics', verbal: 'Final Revision of all Verbal topics', notes: 'Quick review of all key concepts.' },
+            { day: 56, week: 8, type: 'revision', java: 'Grand Mock Interview (Full Length)', aptitude: 'Grand Mock Interview', reasoning: 'Grand Mock Interview', verbal: 'Grand Mock Interview', notes: 'Simulate a real interview experience.' },
+            { day: 57, week: 8, java: 'Analyze Grand Mock Interview Feedback', aptitude: 'Focus on Weak Areas', reasoning: 'Focus on Weak Areas', verbal: 'Focus on Weak Areas', notes: 'Refine answers, practice more.' },
+            { day: 58, week: 8, java: 'Practice Coding Challenges (Timed)', aptitude: 'Practice Speed & Accuracy', reasoning: 'Practice Speed & Accuracy', verbal: 'Practice Speed & Accuracy', notes: 'Improve problem-solving speed.' },
+            { day: 59, week: 8, java: 'Review Interview Notes & Common Pitfalls', aptitude: 'Review Notes', reasoning: 'Review Notes', verbal: 'Review Notes', notes: 'Final mental preparation.' },
+            { day: 60, week: 8, type: 'revision', java: 'Rest & Final Confidence Boost', aptitude: 'Rest', reasoning: 'Rest', verbal: 'Rest', notes: 'Relax, trust your preparation. You\'ve got this!' },
+        ];
+        
+        const state = {
+            currentWeek: 1,
+            activeFilters: ['java', 'aptitude', 'reasoning', 'verbal'],
+            completedDays: JSON.parse(localStorage.getItem('completedDays')) || []
+        };
 
-            document.getElementById('currentYear').textContent = new Date().getFullYear();
+        const contentEl = document.getElementById('plan-content');
+        const tabs = document.querySelectorAll('.tab');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
 
-            function updateActiveNav(hash) {
-                navLinks.forEach(link => {
-                    link.classList.remove('active');
-                    if (link.getAttribute('href') === hash) {
-                        link.classList.add('active');
-                    }
-                });
-                contentSections.forEach(section => {
-                    section.classList.remove('active');
-                    if ('#' + section.id === hash) {
-                        section.classList.add('active');
-                    }
-                });
-            }
+        function saveState() {
+            localStorage.setItem('completedDays', JSON.stringify(state.completedDays));
+        }
+
+        function updateProgress() {
+            const completedCount = state.completedDays.length;
+            const totalDays = 60;
+            const percentage = Math.round((completedCount / totalDays) * 100);
+            progressBar.style.width = `${percentage}%`;
+            progressText.textContent = `${percentage}%`;
+        }
+
+        function applyFilters() {
+            document.querySelectorAll('.topic-group').forEach(group => {
+                if (state.activeFilters.includes(group.dataset.topic)) {
+                    group.style.display = 'block';
+                } else {
+                    group.style.display = 'none';
+                }
+            });
+        }
+        
+        function createSearchLink(dayData) {
+            const topics = [dayData.java, dayData.aptitude, dayData.reasoning, dayData.verbal].join(' ');
+            const query = encodeURIComponent(topics.split('(')[0].trim());
+            return `https://www.google.com/search?q=${query}+tutorial`;
+        }
+
+        function renderWeek(weekNumber) {
+            contentEl.innerHTML = '';
+            const weekData = planData.filter(item => item.week === weekNumber);
             
-            navLinks.forEach(link => {
-                link.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const targetId = this.getAttribute('href');
-                    history.pushState(null, null, targetId);
-                    updateActiveNav(targetId);
-                    if (mobileMenu.classList.contains('block')) {
-                        mobileMenu.classList.remove('block');
-                        mobileMenu.classList.add('hidden');
-                    }
-                    window.scrollTo(0,0);
-                });
-            });
+            weekData.forEach(dayData => {
+                const isCompleted = state.completedDays.includes(dayData.day);
+                const card = document.createElement('article');
+                card.className = `day-card bg-white p-4 rounded-lg shadow-sm border border-stone-200 flex flex-col transition-opacity ${isCompleted ? 'completed' : ''}`;
+                
+                const cardBg = dayData.type === 'revision' ? 'bg-blue-50' : 'bg-white';
+                const textColor = dayData.type === 'revision' ? 'text-blue-800' : 'text-stone-900';
+                const borderColor = dayData.type === 'revision' ? 'border-blue-200' : 'border-stone-200';
 
-            mobileMenuButton.addEventListener('click', function() {
-                mobileMenu.classList.toggle('hidden');
-                mobileMenu.classList.toggle('block');
+                card.className = `day-card ${cardBg} p-4 rounded-lg shadow-sm border ${borderColor} flex flex-col transition-opacity ${isCompleted ? 'completed' : ''}`;
+
+
+                card.innerHTML = `
+                    <div class="flex-grow">
+                        <div class="flex justify-between items-start mb-3">
+                            <h3 class="text-lg font-bold ${textColor}">Day ${dayData.day}</h3>
+                            <div class="flex items-center">
+                                <label for="day-${dayData.day}" class="text-xs text-stone-500 mr-2 select-none">Done</label>
+                                <input type="checkbox" id="day-${dayData.day}" data-day="${dayData.day}" class="h-5 w-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500" ${isCompleted ? 'checked' : ''}>
+                            </div>
+                        </div>
+                        <div class="space-y-3 text-sm">
+                            <div class="topic-group" data-topic="java"><strong class="font-semibold text-stone-600">Java:</strong> ${dayData.java}</div>
+                            <div class="topic-group" data-topic="aptitude"><strong class="font-semibold text-stone-600">Aptitude:</strong> ${dayData.aptitude}</div>
+                            <div class="topic-group" data-topic="reasoning"><strong class="font-semibold text-stone-600">Reasoning:</strong> ${dayData.reasoning}</div>
+                            <div class="topic-group" data-topic="verbal"><strong class="font-semibold text-stone-600">Verbal:</strong> ${dayData.verbal}</div>
+                        </div>
+                    </div>
+                    <div class="mt-4 pt-3 border-t border-dashed border-stone-300">
+                        <p class="text-xs text-stone-500"><strong class="font-semibold">Focus:</strong> ${dayData.notes}</p>
+                        <a href="${createSearchLink(dayData)}" target="_blank" class="text-xs text-blue-600 hover:text-blue-800 font-semibold mt-2 inline-block">Find Resources &rarr;</a>
+                    </div>
+                `;
+                contentEl.appendChild(card);
             });
             
-            window.addEventListener('popstate', function() {
-                updateActiveNav(window.location.hash || '#overview');
-            });
+            applyFilters();
+        }
 
-            if (window.location.hash) {
-                updateActiveNav(window.location.hash);
-            } else {
-                updateActiveNav('#overview');
-            }
-
-            tabButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    tabButtons.forEach(btn => btn.classList.remove('active'));
-                    this.classList.add('active');
-                    
-                    const targetTab = this.dataset.tab;
-                    tabContents.forEach(content => {
-                        content.classList.add('hidden');
-                        content.classList.remove('active');
-                        if (content.id === targetTab) {
-                            content.classList.remove('hidden');
-                            content.classList.add('active');
-                        }
-                    });
-                });
-            });
-
-            accordionToggleButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    const content = this.nextElementSibling;
-                    const icon = this.querySelector('.transform');
-                    
-                    this.classList.toggle('active');
-                    
-                    if (content.style.maxHeight && content.style.maxHeight !== '0px') {
-                        content.style.maxHeight = '0px';
-                        if(icon) icon.style.transform = 'rotate(0deg)';
-                    } else {
-                        content.style.maxHeight = content.scrollHeight + "px";
-                         if(icon) icon.style.transform = 'rotate(180deg)';
-                    }
-                });
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                state.currentWeek = parseInt(tab.dataset.week);
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                renderWeek(state.currentWeek);
             });
         });
+
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.classList.toggle('active');
+                const filter = btn.dataset.filter;
+                if (state.activeFilters.includes(filter)) {
+                    state.activeFilters = state.activeFilters.filter(f => f !== filter);
+                } else {
+                    state.activeFilters.push(filter);
+                }
+                applyFilters();
+            });
+        });
+
+        contentEl.addEventListener('change', (e) => {
+            if (e.target.type === 'checkbox') {
+                const day = parseInt(e.target.dataset.day);
+                if (e.target.checked) {
+                    if (!state.completedDays.includes(day)) {
+                        state.completedDays.push(day);
+                    }
+                } else {
+                    state.completedDays = state.completedDays.filter(d => d !== day);
+                }
+                e.target.closest('.day-card').classList.toggle('completed', e.target.checked);
+                saveState();
+                updateProgress();
+            }
+        });
+        
+        function init() {
+            renderWeek(state.currentWeek);
+            updateProgress();
+        }
+
+        init();
     </script>
 </body>
 </html>
